@@ -12,6 +12,7 @@ ln -sfn "$LUMEN_HOME" "$HOME/.local/share/lumen-launcher/mcpelauncher"
 ENGINE_BIN="$ROOT/../lumen-engine/bldc/mcpelauncher-client/mcpelauncher-client"
 if [ -x "$ENGINE_BIN" ]; then
   export LUMEN_ENGINE="${LUMEN_ENGINE:-$ENGINE_BIN}"
+  export LUMEN_MSA_DIR="${LUMEN_MSA_DIR:-$ROOT/../lumen-msa/stage}"
   # the engine looks up its data files (libsqliteX.so, gamecontrollerdb.txt) in <XDG_DATA_DIRS>/mcpelauncher
   export XDG_DATA_DIRS="$ROOT/../lumen-engine/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 fi

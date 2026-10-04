@@ -12,6 +12,8 @@ REAL="$(readlink -f "$LINK" 2>/dev/null || true)"
 args=()
 for a in "$@"; do args+=("${a/#$LINK/$REAL}"); done
 if [ "${LUMEN_USE_FLATPAK:-0}" != 1 ] && [ -n "${LUMEN_ENGINE:-}" ] && [ -x "$LUMEN_ENGINE" ]; then
+  # Microsoft/Xbox sign-in helpers (msa-daemon, msa-ui-qt) must be on PATH
+  [ -n "${LUMEN_MSA_DIR:-}" ] && export PATH="$LUMEN_MSA_DIR:$PATH"
   exec "$LUMEN_ENGINE" "${args[@]}"
 fi
 exec flatpak run --filesystem="$REAL" --command=mcpelauncher-client io.mrarm.mcpelauncher "${args[@]}"

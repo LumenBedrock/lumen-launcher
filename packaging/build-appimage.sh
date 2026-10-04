@@ -4,6 +4,7 @@ set -euo pipefail
 cd "$(dirname "$0")"
 SRC=../lumen-launcher
 CLIENT="${LUMEN_CLIENT_SO:-../mcbe-qol/build-lumen/liblumen.so}"
+MSA_DIR="${LUMEN_MSA_BUILD:-../lumen-msa/stage}"
 ENGINE="${LUMEN_ENGINE_BIN:-../lumen-engine/bldc/mcpelauncher-client/mcpelauncher-client}"
 VERSION="$(grep -m1 'LAUNCHER_VERSION_NAME' $SRC/mcpelauncher-ui-qt/CMakeLists.txt | sed -E 's/.*"([0-9.]+)".*/\1/')"
 rm -rf AppDir out && mkdir -p out
@@ -12,6 +13,8 @@ rm -f AppDir/usr/share/applications/mcpelauncher-ui-qt.desktop
 install -Dm755 assets/mcpelauncher-client AppDir/usr/bin/mcpelauncher-client
 install -Dm755 assets/AppRun AppDir/AppRun
 install -Dm755 "$ENGINE" AppDir/usr/lib/lumen/mcpelauncher-engine
+install -Dm755 "$MSA_DIR/msa-daemon" AppDir/usr/bin/msa-daemon
+install -Dm755 "$MSA_DIR/msa-ui-qt" AppDir/usr/bin/msa-ui-qt
 mkdir -p AppDir/usr/share && cp -r ../lumen-engine/share/mcpelauncher AppDir/usr/share/
 install -Dm644 "$CLIENT" AppDir/usr/share/lumen/liblumen.so
 date +%s > AppDir/usr/share/lumen/VERSION
@@ -23,7 +26,7 @@ export PATH="$PWD/tools/bin:$PATH"
 # helper libs only needed so the Qt plugin tool can resolve optional plugin dependencies (not shipped)
 export LD_LIBRARY_PATH="$PWD/extra/usr/lib:${LD_LIBRARY_PATH:-}"
 ./tools/linuxdeploy-x86_64.ex/AppRun --appdir AppDir --plugin qt \
-  --desktop-file assets/lumen-launcher.desktop --icon-file assets/lumen-icon-256.png --executable AppDir/usr/bin/mcpelauncher-ui-qt --executable AppDir/usr/lib/lumen/mcpelauncher-engine
+  --desktop-file assets/lumen-launcher.desktop --icon-file assets/lumen-icon-256.png --executable AppDir/usr/bin/mcpelauncher-ui-qt --executable AppDir/usr/lib/lumen/mcpelauncher-engine --executable AppDir/usr/bin/msa-daemon --executable AppDir/usr/bin/msa-ui-qt
 # the AppRun written above is ours; linuxdeploy keeps an existing one
 ./tools/appimagetool-x86_64.ex/AppRun --no-appstream AppDir "out/Lumen-Launcher-$VERSION-x86_64.AppImage"
 # keep a master copy outside the project: AppImageLauncher MOVES any AppImage you "integrate" out of its folder
