@@ -8,15 +8,17 @@ server profiles with their own texture packs and module setups).
 ```
 curl -L -o Lumen-Launcher.AppImage https://github.com/LumenBedrock/lumen-launcher/releases/latest/download/Lumen-Launcher-x86_64.AppImage
 chmod +x Lumen-Launcher.AppImage
-./Lumen-Launcher.AppImage
+APPIMAGELAUNCHER_DISABLE=1 ./Lumen-Launcher.AppImage
 ```
+
+(`APPIMAGELAUNCHER_DISABLE=1` only matters if you have AppImageLauncher installed, see below; it is harmless otherwise.)
 
 Then sign in with the Google account that owns Minecraft: Bedrock Edition, download a game version and press Play.
 Your game, worlds and settings live in the visible folder `~/Lumen`. The Lumen client is installed there automatically
 (a newer one inside a new AppImage replaces it the next time you start the launcher with the game closed).
 The launcher tells you when a new release is out. Needs a desktop session with X11 or XWayland.
 
-> If you use *AppImageLauncher* and nothing opens, see the note in `packaging/SHARE.md`.
+> **AppImageLauncher:** if you have it installed and the AppImage crashes with *"Could not find the Qt platform plugin wayland"*, that message comes from AppImageLauncher (built on Qt5), not from Lumen. Start Lumen with `APPIMAGELAUNCHER_DISABLE=1 ./Lumen-Launcher.AppImage`, or install `qt5-wayland`.
 
 ## What you need to know
 
