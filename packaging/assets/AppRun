@@ -1,0 +1,46 @@
+#!/usr/bin/env bash
+# Lumen Launcher AppImage entry point.
+HERE="$(dirname "$(readlink -f "$0")")"
+export PATH="$HERE/usr/bin:$PATH"
+# Qt environment set up by linuxdeploy (plugin/QML paths)
+for hook in "$HERE"/apprun-hooks/*.sh; do [ -f "$hook" ] && . "$hook"; done
+LUMEN_HOME="${LUMEN_HOME:-$HOME/Lumen}"
+
+notify() {
+  echo "Lumen Launcher: $1" >&2
+  command -v notify-send >/dev/null 2>&1 && notify-send "Lumen Launcher" "$1" || true
+}
+
+# The game engine is bundled in this AppImage (the flatpak is only a fallback).
+if [ ! -x "$HERE/usr/lib/lumen/mcpelauncher-engine" ] || [ "${LUMEN_USE_FLATPAK:-0}" = 1 ]; then
+  if ! command -v flatpak >/dev/null 2>&1 || ! flatpak info io.mrarm.mcpelauncher >/dev/null 2>&1; then
+    notify "No game engine found. Install one with:  flatpak install flathub io.mrarm.mcpelauncher"
+  fi
+fi
+
+# Lumen's data folder (versions, worlds, client, settings) is a visible folder in the home directory.
+mkdir -p "$LUMEN_HOME/mods" "$HOME/.local/share/lumen-launcher"
+ln -sfn "$LUMEN_HOME" "$HOME/.local/share/lumen-launcher/mcpelauncher"
+
+# Install the bundled Lumen client when it is newer than the installed one (never while the game runs).
+BUNDLED="$HERE/usr/share/lumen/liblumen.so"
+if [ -f "$BUNDLED" ]; then
+  NEW="$(cat "$HERE/usr/share/lumen/VERSION" 2>/dev/null || echo 0)"
+  OLD="$(cat "$LUMEN_HOME/mods/.lumen-version" 2>/dev/null || echo 0)"
+  if [ "$NEW" -gt "$OLD" ] 2>/dev/null; then
+    if ps -eo comm | grep -q mcpelauncher-cl; then
+      notify "A newer Lumen client is bundled but the game is running. Restart the launcher after closing the game."
+    else
+      cp "$BUNDLED" "$LUMEN_HOME/mods/.liblumen.so.new" && mv "$LUMEN_HOME/mods/.liblumen.so.new" "$LUMEN_HOME/mods/liblumen.so" && echo "$NEW" > "$LUMEN_HOME/mods/.lumen-version"
+    fi
+  fi
+fi
+
+# data files of the bundled engine (libsqliteX.so, gamecontrollerdb.txt) live in <XDG_DATA_DIRS>/mcpelauncher
+export XDG_DATA_DIRS="$HERE/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
+export XDG_DATA_HOME="$HOME/.local/share/lumen-launcher" XDG_CONFIG_HOME="$HOME/.config/lumen-launcher" XDG_CACHE_HOME="$HOME/.cache/lumen-launcher"
+# Always XWayland/X11: only the xcb Qt platform plugin is bundled, and many sessions export QT_QPA_PLATFORM=wayland
+# globally (which would make this start fail). Override with LUMEN_QPA_PLATFORM=... if you know what you are doing.
+export QT_QPA_PLATFORM="${LUMEN_QPA_PLATFORM:-xcb}"
+export LUMEN_APPIMAGE=1
+exec "$HERE/usr/bin/mcpelauncher-ui-qt" "$@"

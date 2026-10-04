@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+# AppImage shim: uses the engine bundled in this AppImage (usr/lib/lumen/mcpelauncher-engine); falls back to the
+# flatpak engine if it is missing or LUMEN_USE_FLATPAK=1 is set.
+HERE="$(dirname "$(readlink -f "$0")")"
+LINK="$HOME/.local/share/lumen-launcher/mcpelauncher"
+REAL="$(readlink -f "$LINK" 2>/dev/null || true)"
+[ -n "$REAL" ] || REAL="$HOME/Lumen"
+args=()
+for a in "$@"; do args+=("${a/#$LINK/$REAL}"); done
+ENGINE="$HERE/../lib/lumen/mcpelauncher-engine"
+if [ -x "$ENGINE" ] && [ "${LUMEN_USE_FLATPAK:-0}" != 1 ]; then
+  exec "$ENGINE" "${args[@]}"
+fi
+exec flatpak run --filesystem="$REAL" --command=mcpelauncher-client io.mrarm.mcpelauncher "${args[@]}"

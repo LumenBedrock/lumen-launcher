@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=Lumen Launcher
+Comment=Minecraft: Bedrock Edition launcher with the Lumen client
+Exec=lumen-launcher %U
+Icon=lumen-launcher
+Categories=Game;
+Terminal=false
+StartupWMClass=lumen-launcher

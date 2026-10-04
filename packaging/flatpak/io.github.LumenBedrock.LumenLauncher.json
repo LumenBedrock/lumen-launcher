@@ -1,0 +1,275 @@
+{
+  "id": "io.github.LumenBedrock.LumenLauncher",
+  "runtime": "org.kde.Platform",
+  "runtime-version": "6.10",
+  "sdk": "org.kde.Sdk",
+  "sdk-extensions": [
+    "org.freedesktop.Sdk.Extension.llvm21"
+  ],
+  "base": "io.qt.qtwebengine.BaseApp",
+  "base-version": "6.10",
+  "command": "lumen-launcher",
+  "cleanup": [
+    "*.a",
+    "*.la",
+    "/bin/protoc",
+    "/bin/zipcmp",
+    "/bin/zipmerge",
+    "/bin/ziptool",
+    "/bin/captoinfo",
+    "/bin/clear",
+    "/bin/infocmp",
+    "/bin/ncursesw5-config",
+    "/bin/reset",
+    "/bin/tabs",
+    "/bin/tic",
+    "/bin/toe",
+    "/bin/tput",
+    "/bin/tset",
+    "/bin/infotocap",
+    "/lib/libprotobuf-lite*",
+    "/lib/libprotoc*",
+    "/lib/libform*",
+    "/lib/libncurses*",
+    "/lib/libpanel*",
+    "/lib/libformw*",
+    "/lib/libtinfo.so.5",
+    "/lib/terminfo",
+    "/lib/libmenu*",
+    "/app/share/versiondb/*"
+  ],
+  "cleanup-commands": [
+    "/app/cleanup-BaseApp.sh"
+  ],
+  "finish-args": [
+    "--socket=fallback-x11",
+    "--socket=wayland",
+    "--share=network",
+    "--socket=pulseaudio",
+    "--device=all",
+    "--share=ipc",
+    "--env=ALSA_CONFIG_PATH=",
+    "--env=QT_QUICK_CONTROLS_STYLE=",
+    "--env=QT_QUICK_CONTROLS_HOVER_ENABLED=1",
+    "--env=QML_IMPORT_PATH=/app/qml/",
+    "--env=QML_DISABLE_DISK_CACHE=1",
+    "--env=QT_QPA_PLATFORMTHEME=gtk3",
+    "--filesystem=~/Lumen"
+  ],
+  "modules": [
+    {
+      "name": "protobuf",
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/protocolbuffers/protobuf.git",
+          "tag": "v3.12.3",
+          "commit": "31ebe2ac71400344a5db91ffc13c4ddfb7589f92"
+        }
+      ]
+    },
+    {
+      "name": "libzip",
+      "build-options": {
+        "config-opts": [
+          "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+        ]
+      },
+      "buildsystem": "cmake-ninja",
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/nih-at/libzip.git",
+          "tag": "v1.7.1",
+          "commit": "dcd9a0bfe1ac2893d7f62bafb19f0a4d7b08c0f7"
+        }
+      ]
+    },
+    {
+      "name": "msa-manifest",
+      "buildsystem": "cmake",
+      "build-options": {
+        "config-opts": [
+          "-DENABLE_MSA_QT_UI=ON",
+          "-DMSA_UI_PATH_DEV=OFF",
+          "-DFETCHCONTENT_SOURCE_DIR_NLOHMANN_JSON_EXT=nlohmann_json_ext",
+          "-DQT_VERSION=6",
+          "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+        ]
+      },
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/minecraft-linux/msa-manifest.git",
+          "commit": "e335369d9066229bb075d4a7865424b3407934db",
+          "disable-shallow-clone": true
+        },
+        {
+          "type": "file",
+          "url": "https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip",
+          "sha512": "8efd82a54472335e548d0d5c375b6f2781b4a0f2dbc5aa0acc3f504277ec455e0782046286cf08eb4864ac8bcaa1a9691af8d0259dd71a9e539cfc12e0478eb5",
+          "dest-filename": "nlohmann_json_ext.zip"
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "mkdir nlohmann_json_ext",
+            "cd nlohmann_json_ext && unzip ../nlohmann_json_ext.zip"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "mcpelauncher-versiondb",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -Dm644 versions.armeabi-v7a.json.min /app/share/versiondb/versions.armeabi-v7a.json.min",
+        "install -Dm644 versions.x86.json.min /app/share/versiondb/versions.x86.json.min",
+        "install -Dm644 versions.arm64-v8a.json.min /app/share/versiondb/versions.arm64-v8a.json.min",
+        "install -Dm644 versions.x86_64.json.min /app/share/versiondb/versions.x86_64.json.min"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/minecraft-linux/mcpelauncher-versiondb.git",
+          "commit": "c7c755fbbd776ac88a2e6543e406b54dca951a0a"
+        }
+      ]
+    },
+    {
+      "name": "mcpelauncher-ui-manifest",
+      "buildsystem": "cmake",
+      "build-options": {
+        "arch": {
+          "x86_64": {
+            "cflags": "-DDISABLE_32BIT=1 -DNDEBUG",
+            "cxxflags": "-DDISABLE_32BIT=1 -DNDEBUG"
+          },
+          "arm": {
+            "cflags": "-DNDEBUG",
+            "cxxflags": "-DNDEBUG"
+          },
+          "aarch64": {
+            "cflags": "-DDISABLE_32BIT=1 -DNDEBUG",
+            "cxxflags": "-DDISABLE_32BIT=1 -DNDEBUG"
+          }
+        },
+        "config-opts": [
+          "-DQt5QuickCompiler_FOUND=OFF",
+          "-DLAUNCHER_VERSIONDB_PATH=/app/share/versiondb",
+          "-DLAUNCHER_DISABLE_DEV_MODE=ON",
+          "-DFETCHCONTENT_SOURCE_DIR_GLFW3_EXT=glfw3_ext",
+          "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
+          "-DLAUNCHER_VERSIONDB_URL=https://raw.githubusercontent.com/minecraft-linux/mcpelauncher-versiondb/v1.5.x",
+          "-DLAUNCHER_VERSION_NAME=1.0",
+          "-DLAUNCHER_VERSION_CODE=1"
+        ]
+      },
+      "sources": [
+        {
+          "type": "dir",
+          "path": "../../lumen-launcher",
+          "skip": [
+            "build",
+            ".git"
+          ]
+        },
+        {
+          "type": "git",
+          "url": "https://github.com/minecraft-linux/glfw",
+          "commit": "562d100f9ad3a3667bb0944afb974bb7af6f0d8c",
+          "dest": "glfw3_ext"
+        }
+      ]
+    },
+    {
+      "name": "mcpelauncher-client",
+      "buildsystem": "cmake",
+      "builddir": true,
+      "build-options": {
+        "env": {
+          "CC": "clang",
+          "CXX": "clang++",
+          "CFLAGS": "",
+          "CXXFLAGS": ""
+        },
+        "config-opts": [
+          "-DGAMEWINDOW_SYSTEM=SDL3",
+          "-DENABLE_DEV_PATHS=OFF",
+          "-DFETCHCONTENT_SOURCE_DIR_NLOHMANN_JSON_EXT=../nlohmann_json_ext",
+          "-DJNI_USE_JNIVM=ON",
+          "-DBUILD_UI=ON",
+          "-DBUILD_CLIENT=ON",
+          "-DUSE_OWN_CURL=OFF",
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DCMAKE_C_FLAGS=-DNDEBUG",
+          "-DCMAKE_CXX_FLAGS=-DNDEBUG",
+          "-DCMAKE_POLICY_VERSION_MINIMUM=3.5"
+        ],
+        "prepend-path": "/usr/lib/sdk/llvm21/bin",
+        "prepend-ld-library-path": "/usr/lib/sdk/llvm21/lib"
+      },
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://github.com/minecraft-linux/mcpelauncher-manifest.git",
+          "commit": "ef9ceb8e0f7f2dcfae8c39e61040b8143bbffef4",
+          "disable-shallow-clone": true
+        },
+        {
+          "type": "git",
+          "url": "https://github.com/gabomdq/SDL_GameControllerDB",
+          "commit": "5a12daa568d19344f9b6e9286ef5929833b25c7c",
+          "dest": "gamecontrollerdb"
+        },
+        {
+          "type": "file",
+          "url": "https://github.com/nlohmann/json/releases/download/v3.7.3/include.zip",
+          "sha512": "8efd82a54472335e548d0d5c375b6f2781b4a0f2dbc5aa0acc3f504277ec455e0782046286cf08eb4864ac8bcaa1a9691af8d0259dd71a9e539cfc12e0478eb5",
+          "dest-filename": "nlohmann_json_ext.zip"
+        },
+        {
+          "type": "shell",
+          "commands": [
+            "mkdir nlohmann_json_ext",
+            "cd nlohmann_json_ext && unzip ../nlohmann_json_ext.zip"
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lumen",
+      "buildsystem": "simple",
+      "build-commands": [
+        "install -Dm755 lumen-launcher.sh /app/bin/lumen-launcher",
+        "install -Dm644 io.github.LumenBedrock.LumenLauncher.desktop /app/share/applications/io.github.LumenBedrock.LumenLauncher.desktop",
+        "install -Dm644 lumen-icon.svg /app/share/icons/hicolor/scalable/apps/io.github.LumenBedrock.LumenLauncher.svg",
+        "install -Dm644 io.github.LumenBedrock.LumenLauncher.metainfo.xml /app/share/metainfo/io.github.LumenBedrock.LumenLauncher.metainfo.xml",
+        "install -Dm644 liblumen.so /app/share/lumen/liblumen.so",
+        "date +%s > /app/share/lumen/VERSION"
+      ],
+      "sources": [
+        {
+          "type": "file",
+          "path": "lumen-launcher.sh"
+        },
+        {
+          "type": "file",
+          "path": "io.github.LumenBedrock.LumenLauncher.desktop"
+        },
+        {
+          "type": "file",
+          "path": "io.github.LumenBedrock.LumenLauncher.metainfo.xml"
+        },
+        {
+          "type": "file",
+          "path": "../../lumen-launcher/mcpelauncher-ui-qt/Resources/lumen-icon.svg"
+        },
+        {
+          "type": "file",
+          "path": "../../mcbe-qol/build-lumen/liblumen.so"
+        }
+      ]
+    }
+  ]
+}

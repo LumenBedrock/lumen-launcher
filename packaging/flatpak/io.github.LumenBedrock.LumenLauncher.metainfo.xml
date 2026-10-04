@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component type="desktop-application">
+  <id>io.github.LumenBedrock.LumenLauncher</id>
+  <name>Lumen Launcher</name>
+  <summary>Minecraft: Bedrock Edition launcher with the Lumen client</summary>
+  <metadata_license>CC0-1.0</metadata_license>
+  <project_license>GPL-3.0-only</project_license>
+  <developer_name>Lumen</developer_name>
+  <description>
+    <p>Lumen Launcher runs the Android version of Minecraft: Bedrock Edition on Linux and adds the Lumen client: in-game menu, HUD modules, server profiles and texture pack setups per server.</p>
+    <p>It is a modified version of the Minecraft Linux Launcher by the minecraft-linux project (MrARM, ChristopherHX and contributors). You need a Google account that owns Minecraft: Bedrock Edition. Your game, worlds and settings are kept in the folder Lumen in your home directory.</p>
+  </description>
+  <launchable type="desktop-id">io.github.LumenBedrock.LumenLauncher.desktop</launchable>
+  <url type="homepage">https://github.com/LumenBedrock/lumen-launcher</url>
+  <url type="bugtracker">https://github.com/LumenBedrock/lumen-launcher/issues</url>
+  <content_rating type="oars-1.1"/>
+  <releases>
+    <release version="1.0" date="2026-10-04"/>
+  </releases>
+</component>

@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+# Shim: the Lumen launcher UI looks for `mcpelauncher-client` on PATH.
+#  * LUMEN_ENGINE=/path/to/mcpelauncher-client  -> use our own build of the game engine (run.sh sets it)
+#  * LUMEN_USE_FLATPAK=1                        -> force the flatpak engine
+#  * otherwise                                  -> the flatpak's engine (given access to ~/Lumen)
+# The launcher reaches the data folder through a symlink (~/.local/share/lumen-launcher/mcpelauncher
+# -> ~/Lumen) that doesn't exist inside the flatpak sandbox, so every argument is rewritten to the
+# real path first.
+LINK="$HOME/.local/share/lumen-launcher/mcpelauncher"
+REAL="$(readlink -f "$LINK" 2>/dev/null || true)"
+[ -n "$REAL" ] || REAL="$HOME/Lumen"
+args=()
+for a in "$@"; do args+=("${a/#$LINK/$REAL}"); done
+if [ "${LUMEN_USE_FLATPAK:-0}" != 1 ] && [ -n "${LUMEN_ENGINE:-}" ] && [ -x "$LUMEN_ENGINE" ]; then
+  exec "$LUMEN_ENGINE" "${args[@]}"
+fi
+exec flatpak run --filesystem="$REAL" --command=mcpelauncher-client io.mrarm.mcpelauncher "${args[@]}"
