@@ -161,8 +161,8 @@
           "-DFETCHCONTENT_SOURCE_DIR_GLFW3_EXT=glfw3_ext",
           "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
           "-DLAUNCHER_VERSIONDB_URL=https://raw.githubusercontent.com/minecraft-linux/mcpelauncher-versiondb/master",
-          "-DLAUNCHER_VERSION_NAME=1.0.1",
-          "-DLAUNCHER_VERSION_CODE=2"
+          "-DLAUNCHER_VERSION_NAME=1.0.2",
+          "-DLAUNCHER_VERSION_CODE=3"
         ]
       },
       "sources": [
