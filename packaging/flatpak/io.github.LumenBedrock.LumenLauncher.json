@@ -161,8 +161,8 @@
           "-DFETCHCONTENT_SOURCE_DIR_GLFW3_EXT=glfw3_ext",
           "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
           "-DLAUNCHER_VERSIONDB_URL=https://raw.githubusercontent.com/minecraft-linux/mcpelauncher-versiondb/master",
-          "-DLAUNCHER_VERSION_NAME=1.0.2",
-          "-DLAUNCHER_VERSION_CODE=3"
+          "-DLAUNCHER_VERSION_NAME=1.0.6",
+          "-DLAUNCHER_VERSION_CODE=7"
         ]
       },
       "sources": [
@@ -229,7 +229,9 @@
           "type": "shell",
           "commands": [
             "mkdir nlohmann_json_ext",
-            "cd nlohmann_json_ext && unzip ../nlohmann_json_ext.zip"
+            "(cd nlohmann_json_ext && unzip ../nlohmann_json_ext.zip)",
+            "sed -i 's|        {\"pthread_kill\", ::pthread_kill},|        {\"pthread_kill\", ::pthread_kill},\\n        {\"pthread_sigmask\", +[](int, const void*, void*) -> int { return 0; }},\\n        {\"ldiv\", ::ldiv},|' libc-shim/src/pthreads.cpp",
+            "grep -q pthread_sigmask libc-shim/src/pthreads.cpp && grep -q ldiv libc-shim/src/pthreads.cpp"
           ]
         }
       ]
@@ -243,12 +245,25 @@
         "install -Dm644 lumen-icon.svg /app/share/icons/hicolor/scalable/apps/io.github.LumenBedrock.LumenLauncher.svg",
         "install -Dm644 io.github.LumenBedrock.LumenLauncher.metainfo.xml /app/share/metainfo/io.github.LumenBedrock.LumenLauncher.metainfo.xml",
         "install -Dm644 liblumen.so /app/share/lumen/liblumen.so",
-        "date +%s > /app/share/lumen/VERSION"
+        "date +%s > /app/share/lumen/VERSION",
+        "mkdir -p /app/share/lumen/updates-mod && unzip -q updates-mod.zip -d /app/share/lumen/updates-mod",
+        "mv /app/bin/mcpelauncher-client /app/bin/mcpelauncher-client.real",
+        "install -Dm755 lumen-client.sh /app/bin/mcpelauncher-client"
       ],
       "sources": [
         {
           "type": "file",
           "path": "lumen-launcher.sh"
+        },
+        {
+          "type": "file",
+          "path": "lumen-client.sh"
+        },
+        {
+          "type": "file",
+          "url": "https://github.com/minecraft-linux/mcpelauncher-updates/releases/download/v26.40.1/mcpelauncher-updates-x86_64-release.zip",
+          "sha256": "bdb6805858c5a42c50e31609808c9925fe2bb1be311330e1d9848ce3425a0585",
+          "dest-filename": "updates-mod.zip"
         },
         {
           "type": "file",
@@ -264,7 +279,7 @@
         },
         {
           "type": "file",
-          "path": "../../mcbe-qol/build-lumen/liblumen.so"
+          "path": "liblumen.so"
         }
       ]
     }
