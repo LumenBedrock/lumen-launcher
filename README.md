@@ -3,7 +3,22 @@
 A launcher for Minecraft: Bedrock Edition on Linux, built for the **Lumen** client (in-game menu, HUD modules,
 server profiles with their own texture packs and module setups).
 
-## Install (AppImage)
+## Install (recommended: any Linux distro)
+
+```
+curl -fsSL https://raw.githubusercontent.com/LumenBedrock/lumen-launcher/main/install.sh | bash
+```
+
+This installs the Flatpak build, which brings every library it needs, so it works the same on Linux Mint, Ubuntu, Fedora,
+Arch and others. It needs `flatpak` (the script tells you the command if it is missing), uses no `sudo`, and starts the
+launcher when it is done. Run it again any time to update. The Flatpak also bundles the upstream
+[mcpelauncher-updates](https://github.com/minecraft-linux/mcpelauncher-updates) compatibility mod, which current Minecraft
+builds need; it is installed once into `~/Lumen/mods` and needs your Google sign-in on first launch.
+
+## Install (AppImage, recent distros only)
+
+The AppImage bundles its libraries from a rolling-release distro and needs a recent system (glibc 2.43 or newer). On older
+distros such as Linux Mint or Ubuntu LTS, use the Flatpak above.
 
 ```
 curl -L -o Lumen-Launcher.AppImage https://github.com/LumenBedrock/lumen-launcher/releases/latest/download/Lumen-Launcher-x86_64.AppImage
@@ -24,7 +39,7 @@ The launcher tells you when a new release is out. Needs a desktop session with X
 
 - **You must own Minecraft: Bedrock Edition.** The game is downloaded from Google Play with your account; no game files are shipped here.
 - The bundled Lumen client is checked on game versions 1.26.33.1 and 1.26.50.4. Other versions can lack features or crash.
-- The game engine (`mcpelauncher-client`) is an unmodified build of [minecraft-linux/mcpelauncher-manifest](https://github.com/minecraft-linux/mcpelauncher-manifest).
+- The game engine (`mcpelauncher-client`) is a build of [minecraft-linux/mcpelauncher-manifest](https://github.com/minecraft-linux/mcpelauncher-manifest); the Flatpak adds two small libc compatibility functions (`pthread_sigmask`, `ldiv`) that current game versions import.
 
 ## Based on the Minecraft Linux Launcher
 
