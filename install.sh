@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
-# Lumen Launcher installer: installs the Flatpak (it brings everything it needs) and starts it.
+# Lumen Launcher installer: installs/updates the Flatpak from the signed Lumen repository (it brings everything it needs) and starts it.
 # Usage: curl -fsSL https://raw.githubusercontent.com/LumenBedrock/lumen-launcher/main/install.sh | bash
-# No sudo is used. The only file this script ever deletes is its own download in /tmp.
+# No sudo is used. Your game, worlds and settings in ~/Lumen are never touched.
 set -euo pipefail
 
 APP=io.github.LumenBedrock.LumenLauncher
-URL=https://github.com/LumenBedrock/lumen-launcher/releases/latest/download/Lumen-Launcher.flatpak
+REMOTE=lumen-launcher
+REPO_FILE=https://lumenbedrock.github.io/lumen-flatpak/lumen-launcher.flatpakrepo
 FLATHUB=https://dl.flathub.org/repo/flathub.flatpakrepo
 
 if ! command -v flatpak >/dev/null 2>&1; then
@@ -29,28 +30,40 @@ if [ -f "$OLD" ] && [ -x "$OLD" ] && ! pgrep -f "$OLD" >/dev/null 2>&1; then
   rm -f -- "$OLD"
 fi
 
-echo "Setting up Flathub (the source of the runtime Lumen Launcher needs)..."
+echo "Setting up the software sources (Flathub for the runtime, the Lumen repository for the launcher)..."
 flatpak remote-add --user --if-not-exists flathub "$FLATHUB"
+flatpak remote-add --user --if-not-exists "$REMOTE" "$REPO_FILE"
 
-TMP="$(mktemp -d)"
-trap 'rm -f "$TMP/Lumen-Launcher.flatpak"; rmdir "$TMP" 2>/dev/null || true' EXIT
+LOG="$(mktemp)"
+trap 'rm -f "$LOG"' EXIT
 
-echo "Downloading Lumen Launcher..."
-if [ -t 2 ]; then PROG=--progress-bar; else PROG=-sS; fi
-curl -fL $PROG -o "$TMP/Lumen-Launcher.flatpak" "$URL"
-
-echo "Installing (this also downloads the required runtime on the first install, a few hundred MB)..."
-# an identical build that is already installed is not an error; your game data in ~/Lumen is never touched
-if flatpak install --user -y --reinstall "$TMP/Lumen-Launcher.flatpak" >"$TMP/install.log" 2>&1; then
-  echo "Installed."
-elif grep -q "already installed" "$TMP/install.log"; then
-  echo "Already up to date."
-else
-  cat "$TMP/install.log" >&2
-  exit 1
+# a copy installed from somewhere else (an older bundle) is replaced; ~/Lumen is outside the app and stays
+if flatpak info --user "$APP" >/dev/null 2>&1; then
+  ORIGIN="$(flatpak info --user --show-origin "$APP" 2>/dev/null || true)"
+  if [ "$ORIGIN" != "$REMOTE" ]; then
+    echo "Switching to the Lumen repository..."
+    flatpak uninstall --user -y "$APP" >/dev/null 2>&1 || true
+  fi
 fi
-rm -f "$TMP/install.log"
 
-rm -f "$TMP/Lumen-Launcher.flatpak"; rmdir "$TMP" 2>/dev/null || true
+if flatpak info --user "$APP" >/dev/null 2>&1; then
+  echo "Updating Lumen Launcher..."
+  if flatpak update --user -y "$APP" >"$LOG" 2>&1; then
+    echo "Up to date."
+  else
+    cat "$LOG" >&2
+    exit 1
+  fi
+else
+  echo "Installing Lumen Launcher (this also downloads the required runtime on the first install, a few hundred MB)..."
+  if flatpak install --user -y "$REMOTE" "$APP" >"$LOG" 2>&1; then
+    echo "Installed."
+  else
+    cat "$LOG" >&2
+    exit 1
+  fi
+fi
+
+if [ "${LUMEN_NO_START:-0}" = 1 ]; then exit 0; fi
 echo "Done. Starting Lumen Launcher (next time: flatpak run $APP, or use your app menu)."
 exec flatpak run "$APP"
