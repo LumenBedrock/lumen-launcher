@@ -54,7 +54,8 @@
     "--env=QML_IMPORT_PATH=/app/qml/",
     "--env=QML_DISABLE_DISK_CACHE=1",
     "--env=QT_QPA_PLATFORMTHEME=gtk3",
-    "--filesystem=~/Lumen"
+    "--filesystem=~/Lumen",
+    "--talk-name=org.freedesktop.Flatpak"
   ],
   "modules": [
     {
