@@ -15,6 +15,16 @@
   <url type="bugtracker">https://github.com/LumenBedrock/lumen-launcher/issues</url>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.0" date="2026-10-16">
+      <description>
+        <ul>
+          <li>Loading screen while the game starts and while a server loads</li>
+          <li>Joining a server from the launcher no longer shows the external server warning</li>
+          <li>New Chat module, Opacity setting, HUD tab with stretchable HUD widgets, upgraded Zoom</li>
+          <li>Launcher: right-click a planet to rename it or open its modules and texture packs, up to 8 planets, servers page fixes</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.0.9" date="2026-10-16"/>
   </releases>
 </component>
