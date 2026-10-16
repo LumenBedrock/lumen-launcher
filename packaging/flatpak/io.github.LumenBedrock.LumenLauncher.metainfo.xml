@@ -15,6 +15,16 @@
   <url type="bugtracker">https://github.com/LumenBedrock/lumen-launcher/issues</url>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.1" date="2026-10-17">
+      <description>
+        <ul>
+          <li>Chat panel fixes (correct packet layout, no duplicate messages)</li>
+          <li>Inventory icons for texture packs, inventory view update fix</li>
+          <li>Opacity sliders go to 0 on all HUD modules, editable HUD labels</li>
+          <li>Reworked Own Nametag (nickname, size, colours, background, Show in) and Hitbox</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.0" date="2026-10-16">
       <description>
         <ul>
