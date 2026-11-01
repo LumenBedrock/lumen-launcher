@@ -33,6 +33,8 @@ Your game, worlds and settings live in the visible folder `~/Lumen`. The Lumen c
 (a newer one inside a new AppImage replaces it the next time you start the launcher with the game closed).
 The launcher tells you when a new release is out. Needs a desktop session with X11 or XWayland.
 
+> **NVIDIA card on an X11 desktop:** Minecraft 1.26.40 and newer freezes a few seconds after start (an upstream launcher issue, [minecraft-linux/mcpelauncher-manifest#1954](https://github.com/minecraft-linux/mcpelauncher-manifest/issues/1954)). Log in with a Wayland session instead; on Linux Mint install `gnome-session` and pick "GNOME on Wayland" at the login screen.
+
 > **AppImageLauncher:** if you have it installed and the AppImage crashes with *"Could not find the Qt platform plugin wayland"*, that message comes from AppImageLauncher (built on Qt5), not from Lumen. Start Lumen with `APPIMAGELAUNCHER_DISABLE=1 ./Lumen-Launcher.AppImage`, or install `qt5-wayland`.
 
 ## What you need to know

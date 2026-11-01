@@ -37,4 +37,6 @@ if [ ! -f "$UPD/libmcpelauncher-updates.so" ] && [ -d /app/share/lumen/updates-m
 fi
 # X11: window manager matches the window to the desktop file via StartupWMClass=lumen-launcher
 export RESOURCE_NAME=lumen-launcher
+# X11 session on an NVIDIA card: game 1.26.40+ hangs its render thread (minecraft-linux/mcpelauncher-manifest#1954), a Wayland session is the known fix
+if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$DISPLAY" ] && ls -d /usr/lib/x86_64-linux-gnu/GL/nvidia-* >/dev/null 2>&1; then export LUMEN_X11_NVIDIA=1; fi
 exec mcpelauncher-ui-qt "$@"

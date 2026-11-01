@@ -42,7 +42,7 @@
     "/app/cleanup-BaseApp.sh"
   ],
   "finish-args": [
-    "--socket=fallback-x11",
+    "--socket=x11",
     "--socket=wayland",
     "--share=network",
     "--socket=pulseaudio",
@@ -162,8 +162,8 @@
           "-DFETCHCONTENT_SOURCE_DIR_GLFW3_EXT=glfw3_ext",
           "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
           "-DLAUNCHER_VERSIONDB_URL=https://raw.githubusercontent.com/minecraft-linux/mcpelauncher-versiondb/master",
-          "-DLAUNCHER_VERSION_NAME=1.1.3",
-          "-DLAUNCHER_VERSION_CODE=13"
+          "-DLAUNCHER_VERSION_NAME=1.1.4",
+          "-DLAUNCHER_VERSION_CODE=14"
         ]
       },
       "sources": [
