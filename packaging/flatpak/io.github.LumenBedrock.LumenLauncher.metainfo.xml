@@ -15,6 +15,15 @@
   <url type="bugtracker">https://github.com/LumenBedrock/lumen-launcher/issues</url>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.2" date="2026-11-01">
+      <description>
+        <ul>
+          <li>Loading screen while joining a server, Java-style chat with history and autofocus</li>
+          <li>Hitbox fix for the camera angle bug, weather and lightning overrides</li>
+          <li>Only Minecraft 1.26.50.4 is offered; the DRM update banner is gone</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.1" date="2026-10-17">
       <description>
         <ul>

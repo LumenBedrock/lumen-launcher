@@ -45,6 +45,11 @@ if [ -f "$BUNDLED" ]; then
   fi
 fi
 
+# a stale libmcbeqol.so (this client's old name) next to liblumen.so loads a second copy: two menus and an empty Tablist box
+if [ -f "$LIVE" ] && [ -f "$LUMEN_HOME/mods/libmcbeqol.so" ]; then
+  mv "$LUMEN_HOME/mods/libmcbeqol.so" "$LUMEN_HOME/mods/libmcbeqol.so.disabled" && echo "Lumen Launcher: old libmcbeqol.so found next to liblumen.so, renamed to libmcbeqol.so.disabled" >&2
+fi
+
 # data files of the bundled engine (libsqliteX.so, gamecontrollerdb.txt) live in <XDG_DATA_DIRS>/mcpelauncher
 export XDG_DATA_DIRS="$HERE/usr/share:${XDG_DATA_DIRS:-/usr/local/share:/usr/share}"
 export XDG_DATA_HOME="$HOME/.local/share/lumen-launcher" XDG_CONFIG_HOME="$HOME/.config/lumen-launcher" XDG_CACHE_HOME="$HOME/.cache/lumen-launcher"

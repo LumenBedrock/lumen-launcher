@@ -26,6 +26,10 @@ if [ -f "$BUNDLED" ]; then
     fi
   fi
 fi
+# a stale libmcbeqol.so (this client's old name) next to liblumen.so loads a second copy: two menus and an empty Tablist box
+if [ -f "$LIVE" ] && [ -f "$LUMEN_HOME/mods/libmcbeqol.so" ]; then
+  mv "$LUMEN_HOME/mods/libmcbeqol.so" "$LUMEN_HOME/mods/libmcbeqol.so.disabled" && echo "Lumen Launcher: old libmcbeqol.so found next to liblumen.so, renamed to libmcbeqol.so.disabled" >&2
+fi
 # bundled upstream compat mod (patches libmaesdk/PlayFab); installed once, never overwrites an existing copy
 UPD="$LUMEN_HOME/mods/mcpelauncher-updates/lumen-bundled/x86_64"
 if [ ! -f "$UPD/libmcpelauncher-updates.so" ] && [ -d /app/share/lumen/updates-mod ]; then
