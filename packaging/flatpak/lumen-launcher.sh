@@ -35,4 +35,6 @@ UPD="$LUMEN_HOME/mods/mcpelauncher-updates/lumen-bundled/x86_64"
 if [ ! -f "$UPD/libmcpelauncher-updates.so" ] && [ -d /app/share/lumen/updates-mod ]; then
   mkdir -p "$UPD" && cp -r /app/share/lumen/updates-mod/. "$UPD/"
 fi
+# X11: window manager matches the window to the desktop file via StartupWMClass=lumen-launcher
+export RESOURCE_NAME=lumen-launcher
 exec mcpelauncher-ui-qt "$@"

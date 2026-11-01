@@ -54,7 +54,7 @@
     "--env=QML_IMPORT_PATH=/app/qml/",
     "--env=QML_DISABLE_DISK_CACHE=1",
     "--env=QT_QPA_PLATFORMTHEME=gtk3",
-    "--filesystem=~/Lumen",
+    "--filesystem=~/Lumen:create",
     "--talk-name=org.freedesktop.Flatpak"
   ],
   "modules": [
@@ -162,8 +162,8 @@
           "-DFETCHCONTENT_SOURCE_DIR_GLFW3_EXT=glfw3_ext",
           "-DCMAKE_POLICY_VERSION_MINIMUM=3.5",
           "-DLAUNCHER_VERSIONDB_URL=https://raw.githubusercontent.com/minecraft-linux/mcpelauncher-versiondb/master",
-          "-DLAUNCHER_VERSION_NAME=1.1.2",
-          "-DLAUNCHER_VERSION_CODE=12"
+          "-DLAUNCHER_VERSION_NAME=1.1.3",
+          "-DLAUNCHER_VERSION_CODE=13"
         ]
       },
       "sources": [
