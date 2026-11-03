@@ -55,6 +55,9 @@
     "--env=QML_DISABLE_DISK_CACHE=1",
     "--env=QT_QPA_PLATFORMTHEME=gtk3",
     "--filesystem=~/Lumen:create",
+    "--filesystem=xdg-run/discord-ipc-0",
+    "--filesystem=xdg-run/app/com.discordapp.Discord:create",
+    "--filesystem=xdg-run/app/dev.vencord.Vesktop:create",
     "--talk-name=org.freedesktop.Flatpak"
   ],
   "modules": [
