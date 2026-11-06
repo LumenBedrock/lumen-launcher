@@ -39,4 +39,9 @@ fi
 export RESOURCE_NAME=lumen-launcher
 # X11 session on an NVIDIA card: game 1.26.40+ hangs its render thread (minecraft-linux/mcpelauncher-manifest#1954), a Wayland session is the known fix
 if [ -z "$WAYLAND_DISPLAY" ] && [ -n "$DISPLAY" ] && ls -d /usr/lib/x86_64-linux-gnu/GL/nvidia-* >/dev/null 2>&1; then export LUMEN_X11_NVIDIA=1; fi
+# Java Chat needs the engine's keyboard autofocus patches: set them once when the settings file doesn't mention them (an explicit false is kept)
+CS="$LUMEN_HOME/mcpelauncher-client-settings.txt"
+for k in enable_keyboard_autofocus_patches_1_20_60 enable_keyboard_autofocus_paste_patches_1_20_60; do
+  grep -q "^$k=" "$CS" 2>/dev/null || echo "$k=true" >> "$CS"
+done
 exec mcpelauncher-ui-qt "$@"

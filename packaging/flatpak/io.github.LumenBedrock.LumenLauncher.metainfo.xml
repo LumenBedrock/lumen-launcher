@@ -15,6 +15,15 @@
   <url type="bugtracker">https://github.com/LumenBedrock/lumen-launcher/issues</url>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.5" date="2026-11-06">
+      <description>
+        <ul>
+          <li>Lumen client update: new main menu with its own themes, Java-style chat, Lumen member markers with Discord roles, fog fixes, nametag height, tab list improvements</li>
+          <li>Chat autofocus is on by default (keyboard autofocus patches written to the client settings)</li>
+          <li>Discord Rich Presence while the game runs (Settings toggle)</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.4" date="2026-11-01">
       <description>
         <ul>
