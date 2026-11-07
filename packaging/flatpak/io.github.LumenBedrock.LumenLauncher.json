@@ -56,8 +56,20 @@
     "--env=QT_QPA_PLATFORMTHEME=gtk3",
     "--filesystem=~/Lumen:create",
     "--filesystem=xdg-run/discord-ipc-0",
+    "--filesystem=xdg-run/discord-ipc-1",
+    "--filesystem=xdg-run/discord-ipc-2",
+    "--filesystem=xdg-run/discord-ipc-3",
+    "--filesystem=xdg-run/discord-ipc-4",
+    "--filesystem=xdg-run/discord-ipc-5",
+    "--filesystem=xdg-run/discord-ipc-6",
+    "--filesystem=xdg-run/discord-ipc-7",
+    "--filesystem=xdg-run/discord-ipc-8",
+    "--filesystem=xdg-run/discord-ipc-9",
     "--filesystem=xdg-run/app/com.discordapp.Discord:create",
+    "--filesystem=xdg-run/app/com.discordapp.DiscordCanary:create",
+    "--filesystem=xdg-run/app/com.discordapp.DiscordPTB:create",
     "--filesystem=xdg-run/app/dev.vencord.Vesktop:create",
+    "--filesystem=xdg-run/snap.discord",
     "--talk-name=org.freedesktop.Flatpak"
   ],
   "modules": [
@@ -214,7 +226,7 @@
         {
           "type": "git",
           "url": "https://github.com/minecraft-linux/mcpelauncher-manifest.git",
-          "commit": "ef9ceb8e0f7f2dcfae8c39e61040b8143bbffef4",
+          "commit": "2e2ec0acc25070de486fe898df7298db888cad8c",
           "disable-shallow-clone": true
         },
         {
@@ -235,7 +247,9 @@
             "mkdir nlohmann_json_ext",
             "(cd nlohmann_json_ext && unzip ../nlohmann_json_ext.zip)",
             "sed -i 's|        {\"pthread_kill\", ::pthread_kill},|        {\"pthread_kill\", ::pthread_kill},\\n        {\"pthread_sigmask\", +[](int, const void*, void*) -> int { return 0; }},\\n        {\"ldiv\", ::ldiv},|' libc-shim/src/pthreads.cpp",
-            "grep -q pthread_sigmask libc-shim/src/pthreads.cpp && grep -q ldiv libc-shim/src/pthreads.cpp"
+            "grep -q pthread_sigmask libc-shim/src/pthreads.cpp && grep -q ldiv libc-shim/src/pthreads.cpp",
+            "sed -i 's|return onKeyboard((KeyCode)btn, action|if(btn != 8 \\&\\& btn != 9) return; return onKeyboard((KeyCode)(btn - 3), action|' mcpelauncher-client/src/window_callbacks.cpp",
+            "grep -q 'btn - 3' mcpelauncher-client/src/window_callbacks.cpp"
           ]
         }
       ]
@@ -249,6 +263,7 @@
         "install -Dm644 lumen-icon.svg /app/share/icons/hicolor/scalable/apps/io.github.LumenBedrock.LumenLauncher.svg",
         "install -Dm644 io.github.LumenBedrock.LumenLauncher.metainfo.xml /app/share/metainfo/io.github.LumenBedrock.LumenLauncher.metainfo.xml",
         "install -Dm644 liblumen.so /app/share/lumen/liblumen.so",
+        "install -Dm644 lumen-public.gpg /app/share/lumen/lumen-public.gpg",
         "date +%s > /app/share/lumen/VERSION",
         "mkdir -p /app/share/lumen/updates-mod && unzip -q updates-mod.zip -d /app/share/lumen/updates-mod",
         "mv /app/bin/mcpelauncher-client /app/bin/mcpelauncher-client.real",
@@ -284,6 +299,10 @@
         {
           "type": "file",
           "path": "liblumen.so"
+        },
+        {
+          "type": "file",
+          "path": "lumen-public.gpg"
         }
       ]
     }

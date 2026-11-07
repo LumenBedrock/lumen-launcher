@@ -57,9 +57,14 @@ export XDG_DATA_HOME="$HOME/.local/share/lumen-launcher" XDG_CONFIG_HOME="$HOME/
 # globally (which would make this start fail). Override with LUMEN_QPA_PLATFORM=... if you know what you are doing.
 export QT_QPA_PLATFORM="${LUMEN_QPA_PLATFORM:-xcb}"
 export LUMEN_APPIMAGE=1
-# Java Chat needs the engine's keyboard autofocus patches: set them once when the settings file doesn't mention them (an explicit false is kept)
+# Java Chat needs the engine's keyboard autofocus patches (upstream default is off, and older clients saved an explicit false): force them on once, later toggles in the menu are kept
 CS="$LUMEN_HOME/mcpelauncher-client-settings.txt"
-for k in enable_keyboard_autofocus_patches_1_20_60 enable_keyboard_autofocus_paste_patches_1_20_60; do
-  grep -q "^$k=" "$CS" 2>/dev/null || echo "$k=true" >> "$CS"
-done
+if [ ! -f "$LUMEN_HOME/.autofocus-v2" ]; then
+  mkdir -p "$LUMEN_HOME"
+  for k in enable_keyboard_autofocus_patches_1_20_60 enable_keyboard_autofocus_paste_patches_1_20_60; do
+    [ -f "$CS" ] && sed -i "/^$k=/d" "$CS"
+    echo "$k=true" >> "$CS"
+  done
+  touch "$LUMEN_HOME/.autofocus-v2"
+fi
 exec "$HERE/usr/bin/mcpelauncher-ui-qt" "$@"
