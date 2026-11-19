@@ -1,0 +1,42 @@
+diff --git a/src/window_callbacks.cpp b/src/window_callbacks.cpp
+--- a/src/window_callbacks.cpp
++++ b/src/window_callbacks.cpp
+@@ -158,8 +158,16 @@
+             return;
+         }
+         if(btn > 3) {
+-            // Seems to get recognized same as regular Mousebuttons as Button4 or higher, but ignored from mouse
+-            return onKeyboard((KeyCode)btn, action == MouseButtonAction::PRESS ? KeyAction::PRESS : KeyAction::RELEASE, 0);
++            // Side buttons arrive as 8/9 (SDL3, GLFW, X11) or, older encodings, 4/5. The game's Android mouse path takes them as a motion event
++            // with BUTTON_BACK/FORWARD in buttonState plus actionButton set; the Lumen client mod turns that into Button5/Button6 (Button4/5 on Windows).
++            // shortcut: other buttons are ignored, they have no id
++            int side = (btn == 4 || btn == 8) ? 8 : (btn == 5 || btn == 9) ? 9 : 0;
++            if(side == 0)
++                return;
++            if(useDirectMouseInput) // the direct feed has no id for them: VK_XBUTTON1/2 as keys
++                return onKeyboard((KeyCode)(side - 3), action == MouseButtonAction::PRESS ? KeyAction::PRESS : KeyAction::RELEASE, 0);
++            actionButtonHint_ = mapMouseButtonToAndroid(side);
++            btn = side;
+         }
+         if(useDirectMouseInput)
+             Mouse::feed((char)btn, (char)(action == MouseButtonAction::PRESS ? 1 : 0), (short)x, (short)(y - menubarsize), 0, 0);
+@@ -280,6 +309,8 @@
+     event.deviceId = deviceId;
+     event.action = action;
+     event.buttonState = buttonState;
++    event.actionButton = actionButtonHint_;
++    actionButtonHint_ = 0;
+     event.precisionX = x;
+     event.precisionY = y;
+     event.pointerCount = 2;
+diff --git a/src/window_callbacks.h b/src/window_callbacks.h
+--- a/src/window_callbacks.h
++++ b/src/window_callbacks.h
+@@ -55,6 +55,7 @@
+     uint8_t delayedPaste = 0;
+     std::string lastPasteStr = "";
+     bool useDirectMouseInput, useDirectKeyboardInput;
++    int actionButtonHint_ = 0; // set for the next sendMouseEvent only (side buttons)
+     bool needsQueueGamepadInput = true;
+     bool sendEvents = false;
+     bool cursorLocked = false;

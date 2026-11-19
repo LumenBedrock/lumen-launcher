@@ -232,6 +232,12 @@
           "disable-shallow-clone": true
         },
         {
+          "type": "patch",
+          "path": "mouse-side-buttons.patch",
+          "strip-components": 1,
+          "dest": "mcpelauncher-client"
+        },
+        {
           "type": "git",
           "url": "https://github.com/gabomdq/SDL_GameControllerDB",
           "commit": "5a12daa568d19344f9b6e9286ef5929833b25c7c",
@@ -249,9 +255,7 @@
             "mkdir nlohmann_json_ext",
             "(cd nlohmann_json_ext && unzip ../nlohmann_json_ext.zip)",
             "sed -i 's|        {\"pthread_kill\", ::pthread_kill},|        {\"pthread_kill\", ::pthread_kill},\\n        {\"pthread_sigmask\", +[](int, const void*, void*) -> int { return 0; }},\\n        {\"ldiv\", ::ldiv},|' libc-shim/src/pthreads.cpp",
-            "grep -q pthread_sigmask libc-shim/src/pthreads.cpp && grep -q ldiv libc-shim/src/pthreads.cpp",
-            "sed -i 's|return onKeyboard((KeyCode)btn, action|if(btn != 8 \\&\\& btn != 9) return; return onKeyboard((KeyCode)(btn - 3), action|' mcpelauncher-client/src/window_callbacks.cpp",
-            "grep -q 'btn - 3' mcpelauncher-client/src/window_callbacks.cpp"
+            "grep -q pthread_sigmask libc-shim/src/pthreads.cpp && grep -q ldiv libc-shim/src/pthreads.cpp"
           ]
         }
       ]
