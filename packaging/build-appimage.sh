@@ -19,6 +19,7 @@ install -Dm755 "$MSA_DIR/mcpelauncher-webview" AppDir/usr/bin/mcpelauncher-webvi
 mkdir -p AppDir/usr/share && cp -r ../lumen-engine/share/mcpelauncher AppDir/usr/share/
 install -Dm644 "$CLIENT" AppDir/usr/share/lumen/liblumen.so
 date +%s > AppDir/usr/share/lumen/VERSION
+install -Dm644 $SRC/packaging/flatpak/lumen-public.gpg AppDir/usr/share/lumen/lumen-public.gpg # the self-updater checks <AppImage>.sig with it
 install -Dm644 $SRC/mcpelauncher-ui-qt/LICENSE AppDir/usr/share/doc/lumen-launcher/LICENSE
 install -Dm644 $SRC/README.md AppDir/usr/share/doc/lumen-launcher/README.md
 install -Dm644 $SRC/mcpelauncher-ui-qt/Resources/lumen-icon.svg AppDir/usr/share/icons/hicolor/scalable/apps/lumen-launcher.svg
@@ -33,5 +34,8 @@ export LD_LIBRARY_PATH="$PWD/extra/usr/lib:${LD_LIBRARY_PATH:-}"
 # keep a master copy outside the project: AppImageLauncher MOVES any AppImage you "integrate" out of its folder
 mkdir -p "$HOME/Lumen-Releases"
 install -m755 "out/Lumen-Launcher-$VERSION-x86_64.AppImage" "$HOME/Lumen-Releases/"
+# detached signature, uploaded next to the AppImage in the release: the self-updater refuses an AppImage without a valid one
+gpg --homedir "$HOME/Lumen-Releases/signing/gnupg" --local-user 012392E14AB9FB66B6834A09E60917DD9B885FD4 --yes --detach-sign \
+  -o "$HOME/Lumen-Releases/Lumen-Launcher-$VERSION-x86_64.AppImage.sig" "$HOME/Lumen-Releases/Lumen-Launcher-$VERSION-x86_64.AppImage"
 cp -f SHARE.md "$HOME/Lumen-Releases/SHARE.md"
 ls -la out "$HOME/Lumen-Releases"

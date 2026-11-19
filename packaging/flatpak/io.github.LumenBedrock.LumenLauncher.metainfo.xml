@@ -15,6 +15,15 @@
   <url type="bugtracker">https://github.com/LumenBedrock/lumen-launcher/issues</url>
   <content_rating type="oars-1.1"/>
   <releases>
+    <release version="1.1.6" date="2026-11-19">
+      <description>
+        <ul>
+          <li>Lumen client update: hold-to-place fix on 1.26.60+, Auto Requeue, Music module with sky lyrics, potion effects and sprint HUD, pack mixer redesign, capes and custom models for your skin, Entity Distance and Performance Preset</li>
+          <li>Drag and drop packs and skins onto the launcher to install them</li>
+          <li>AppImage self-update checks a signature</li>
+        </ul>
+      </description>
+    </release>
     <release version="1.1.5" date="2026-11-06">
       <description>
         <ul>
